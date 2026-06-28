@@ -1,22 +1,32 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """Экран мойки: таймер и выбор услуги."""
 
 import tkinter as tk
 from typing import Dict, Optional
 
-from avtomoyka.app_settings import pause_budget_seconds, session_warning_seconds
-from avtomoyka.services.client_service import Client
-from avtomoyka.services import session_service as ss
-from avtomoyka.ui import styles as S
-from avtomoyka.ui.widgets import touch_button
+from avtomoyka_v2.app_settings import pause_budget_seconds, session_warning_seconds
+from avtomoyka_v2.services.client_service import Client
+from avtomoyka_v2.services import session_service as ss
+from avtomoyka_v2.ui import styles as S
+from avtomoyka_v2.ui.widgets import touch_button
 
 
 class SessionScreen(tk.Frame):
-    def __init__(self, master, app, seconds: int, client: Optional[Client]):
+    def __init__(
+        self,
+        master,
+        app,
+        seconds: int,
+        client: Optional[Client],
+        free_mode: bool = False,
+    ):
         super().__init__(master, bg=S.BG)
         self.app = app
         self.client = client
-        self.session = ss.start_session(seconds, client.id if client else None)
+        self.free_mode = free_mode
+        self.session = ss.start_session(
+            seconds, client.id if client else None, free=free_mode
+        )
         self._service_buttons: Dict[str, tk.Button] = {}
         self._tick_job = None
         self._blink_job = None
@@ -31,7 +41,11 @@ class SessionScreen(tk.Frame):
         self._pause_budget = pause_budget_seconds()
 
         self.title_label = tk.Label(
-            self, text="Выберите услугу для старта", font=S.FONT_HEAD, bg=S.BG, fg=S.FG
+            self,
+            text="Служебный режим — выберите услугу" if free_mode else "Выберите услугу для старта",
+            font=S.FONT_HEAD,
+            bg=S.BG,
+            fg=S.WARNING if free_mode else S.FG,
         )
         self.title_label.pack(pady=(24, 0))
 
@@ -241,7 +255,7 @@ class SessionScreen(tk.Frame):
         remaining = fresh.seconds_remaining if fresh else self.session.seconds_remaining
         bonus_refund = 0
         if self.client and remaining > 0:
-            from avtomoyka.services.client_service import add_bonus
+            from avtomoyka_v2.services.client_service import add_bonus
 
             add_bonus(self.client.id, remaining)
             bonus_refund = remaining

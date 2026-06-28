@@ -1,18 +1,18 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """Пополнение баланса / выбор суммы."""
 
 import tkinter as tk
 from typing import Optional
 
-from avtomoyka.services.client_service import (
+from avtomoyka_v2.services.client_service import (
     Client,
     deduct_balance,
     get_client,
     spend_bonuses,
 )
-from avtomoyka.ui import styles as S
-from avtomoyka.ui.dialogs import show_error, show_warning
-from avtomoyka.ui.widgets import Numpad, touch_button
+from avtomoyka_v2.ui import styles as S
+from avtomoyka_v2.ui.dialogs import show_error, show_warning
+from avtomoyka_v2.ui.widgets import Numpad, touch_button
 
 PRESETS = [100, 200, 300, 500]
 

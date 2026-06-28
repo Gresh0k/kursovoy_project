@@ -1,11 +1,11 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """Встроенные диалоги в стиле постамата (без системных окон)."""
 
 import tkinter as tk
 from typing import Callable, Optional
 
-from avtomoyka.ui import styles as S
-from avtomoyka.ui.widgets import touch_button
+from avtomoyka_v2.ui import styles as S
+from avtomoyka_v2.ui.widgets import touch_button
 
 
 def _close_overlay(overlay: tk.Frame) -> None:

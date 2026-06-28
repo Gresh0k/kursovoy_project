@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """Стили для сенсорного экрана постамата."""
 
 # Шрифты
@@ -24,3 +24,11 @@ MUTED = "#a0aec0"
 BTN_PADX = 24
 BTN_PADY = 20
 BTN_MIN_WIDTH = 14
+
+# Компактные стили для админ-панели
+FONT_ADMIN_TITLE = ("Segoe UI", 22, "bold")
+FONT_ADMIN_HEAD = ("Segoe UI", 16, "bold")
+FONT_ADMIN_BODY = ("Segoe UI", 13)
+FONT_ADMIN_BTN = ("Segoe UI", 12, "bold")
+BTN_ADMIN_PADX = 10
+BTN_ADMIN_PADY = 6

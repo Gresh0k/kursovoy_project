@@ -1,11 +1,11 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """SQLite: клиенты, услуги, сессии, пополнения."""
 
 import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
 
-from avtomoyka.app_settings import get_db_path
+from avtomoyka_v2.app_settings import get_db_path
 
 _SCHEMA = """
 CREATE TABLE IF NOT EXISTS clients (
@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS clients (
     balance_rub INTEGER NOT NULL DEFAULT 0,
     bonus_rub INTEGER NOT NULL DEFAULT 0,
     is_blocked INTEGER NOT NULL DEFAULT 0,
+    pin_code TEXT,
     created_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime'))
 );
 
@@ -70,8 +71,15 @@ def init_db() -> Path:
                 "INSERT INTO services (code, name, sort_order) VALUES (?, ?, ?)",
                 _DEFAULT_SERVICES,
             )
+        _migrate(conn)
         conn.commit()
     return path
+
+
+def _migrate(conn: sqlite3.Connection) -> None:
+    cols = {row[1] for row in conn.execute("PRAGMA table_info(clients)").fetchall()}
+    if "pin_code" not in cols:
+        conn.execute("ALTER TABLE clients ADD COLUMN pin_code TEXT")
 
 
 @contextmanager
