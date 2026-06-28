@@ -106,7 +106,7 @@ session_warning_seconds = 30
 |----------|----------|
 | `rub_per_second` | 1 ₽ = N сек мойки |
 | `pause_budget_seconds` | Общий запас паузы за сессию |
-| `session_warning_seconds` | За сколько секунд до конца мигать таймер |
+| `session_warning_seconds` | За сколько секунд до конца таймера мигать |
 | `idle_timeout_seconds` | Бездействие на экранах ввода → главная |
 
 ---
