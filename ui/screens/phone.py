@@ -1,12 +1,13 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """Вход по телефону для зарегистрированных клиентов."""
 
 import tkinter as tk
 
-from avtomoyka.services.client_service import find_by_phone, register
-from avtomoyka.ui import styles as S
-from avtomoyka.ui.dialogs import ask_yes_no, show_error, show_warning
-from avtomoyka.ui.widgets import Numpad, touch_button
+from avtomoyka_v2.services.auth_service import client_needs_pin_setup, is_admin_phone
+from avtomoyka_v2.services.client_service import find_by_phone, register
+from avtomoyka_v2.ui import styles as S
+from avtomoyka_v2.ui.dialogs import ask_yes_no, show_error, show_warning
+from avtomoyka_v2.ui.widgets import Numpad, touch_button
 
 
 class PhoneScreen(tk.Frame):
@@ -48,19 +49,27 @@ class PhoneScreen(tk.Frame):
             )
             return
 
+        if is_admin_phone(phone):
+            self.app.show_admin_pin(phone)
+            return
+
         client = find_by_phone(phone)
         if client is None:
             ask_yes_no(
                 self,
                 "Регистрация",
                 f"Клиент {phone} не найден.\nЗарегистрировать?",
-                on_yes=lambda: self._finish_login(register(phone)),
+                on_yes=lambda: self._after_register(phone),
             )
             return
 
-        self._finish_login(client)
+        self._proceed_client(phone, client)
 
-    def _finish_login(self, client):
+    def _after_register(self, phone: str):
+        client = register(phone)
+        self.app.show_pin_setup(phone, client)
+
+    def _proceed_client(self, phone: str, client):
         if client.is_blocked:
             show_error(
                 self,
@@ -69,4 +78,7 @@ class PhoneScreen(tk.Frame):
             )
             return
 
-        self.app.show_topup(client)
+        if client_needs_pin_setup(client.id):
+            self.app.show_pin_setup(phone, client)
+        else:
+            self.app.show_pin_login(phone, client)

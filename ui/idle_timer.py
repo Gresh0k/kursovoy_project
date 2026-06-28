@@ -5,10 +5,12 @@ import tkinter as tk
 from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
-    from avtomoyka.ui.kiosk_app import KioskApp
+    from avtomoyka_v2.ui.kiosk_app import KioskApp
 
 
 class IdleTimer:
+    """Один глобальный таймер на окно; сбрасывается при нажатиях и клавишах."""
+
     def __init__(self, root: tk.Tk, app: "KioskApp"):
         self.root = root
         self.app = app

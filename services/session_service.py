@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """Сессии мойки: таймер, услуги."""
 
 from dataclasses import dataclass
 from typing import List, Optional
 
-from avtomoyka.data.db import get_connection
+from avtomoyka_v2.data.db import get_connection
 
 
 @dataclass
@@ -31,7 +31,7 @@ def list_services() -> List[Service]:
     return [Service(r["code"], r["name"]) for r in rows]
 
 
-def start_session(seconds: int, client_id: Optional[int] = None) -> Session:
+def start_session(seconds: int, client_id: Optional[int] = None, free: bool = False) -> Session:
     with get_connection() as conn:
         cur = conn.execute(
             """
@@ -41,10 +41,19 @@ def start_session(seconds: int, client_id: Optional[int] = None) -> Session:
             (client_id, seconds, seconds),
         )
         session_id = cur.lastrowid
-        conn.execute(
-            "INSERT INTO topups (client_id, session_id, amount_rub) VALUES (?, ?, ?)",
-            (client_id, session_id, seconds),
-        )
+        if free:
+            conn.execute(
+                """
+                INSERT INTO topups (client_id, session_id, amount_rub, payment_method)
+                VALUES (?, ?, 0, 'admin')
+                """,
+                (client_id, session_id),
+            )
+        else:
+            conn.execute(
+                "INSERT INTO topups (client_id, session_id, amount_rub) VALUES (?, ?, ?)",
+                (client_id, session_id, seconds),
+            )
         row = conn.execute(
             "SELECT * FROM sessions WHERE id = ?",
             (session_id,),

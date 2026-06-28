@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """Экран окончания сессии."""
 
 import tkinter as tk
 
-from avtomoyka.ui import styles as S
-from avtomoyka.ui.widgets import touch_button
+from avtomoyka_v2.ui import styles as S
+from avtomoyka_v2.ui.widgets import touch_button
 
 
 class FinishScreen(tk.Frame):
